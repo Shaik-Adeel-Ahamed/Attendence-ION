@@ -1,15 +1,92 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Login</title>
-</head>
-<body>
-  <h2>Login with ID Number</h2>
-  <form method="POST" action="/login">
-    <input type="text" name="idNumber" placeholder="Enter your ID" required />
-    <button type="submit">Login</button>
-  </form>
-  <a href="/sign-up"><button type="button">Sign Up</button></a>
 
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-container {
+      background-color: white;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-container h2 {
+      margin-bottom: 24px;
+      color: #333;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #45a049;
+    }
+
+    .signup-btn {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    .signup-btn:hover {
+      background-color: #1976D2;
+    }
+
+    a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <h2>Login with ID Number</h2>
+    <form method="POST" action="/login">
+      <input type="text" name="idNumber" placeholder="Enter your ID" required />
+      <button type="submit">Login</button>
+    </form>
+    <a href="/sign-up"><button type="button">Sign Up</button></a>
+  </div>
 </body>
+
 </html>
