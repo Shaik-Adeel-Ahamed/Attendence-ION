@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Dashboard</title>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 10px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+    min-width: 40px;
+    word-wrap: break-word;
+  }
+
+  .present {
+    background-color: lightgreen;
+  }
+
+  .disabled {
+    background-color: #eee;
+    color: #aaa;
+  }
+
+  .today {
+    background-color: #ffc;
+  }
+
+  .header {
+    margin-bottom: 20px;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #218838;
+  }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-buttons a,
+  .nav-buttons span {
+    text-decoration: none;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+
+  .nav-buttons a:hover {
+    background-color: #0056b3;
+  }
+
+  #incomeForm {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  #income {
+    padding: 6px;
+    font-size: 16px;
+    flex: 1;
+    min-width: 120px;
+    max-width: 200px;
+  }
+
+  #totalIncome {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  @media (max-width: 600px) {
+    td {
+      padding: 6px;
+      font-size: 12px;
+    }
+
+    button {
+      font-size: 12px;
+      padding: 4px 8px;
+    }
+
+    .nav-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .nav-buttons a,
+    .nav-buttons span {
+      width: 100%;
+      text-align: center;
+    }
+
+    #incomeForm {
+      flex-direction: column;
+    }
+
+    #totalIncome {
+      text-align: center;
+    }
+  }
+</style>
+
+</head>
+
+<body>
+  <div class="header">
+    <h2>Welcome, <%= user.name %> (ID: <%= user.idNumber %>)</h2>
+    <h3>You were present <%= presentCount.length %> days this month</h3>
+    <p id="presentCountDisplay" class="days" ><%= presentCount.length %></p>
+    <form id="incomeForm" onsubmit="calculateIncome(event)">
+  <label for="income">Enter Per Day Income:</label>
+  <input type="number" id="income" required />
+  <button type="submit">Calculate</button>
+</form>
+
+<h3 id="totalIncome"></h3>
+
+    <div class="nav-buttons">
+      <% if (month> 0) { %>
+        <a href="/dashboard?month=<%= month - 1 %>">⬅ Previous Month</a>
+        <% } else { %>
+          <span></span>
+          <% } %>
+
+            <% if (month < 11) { %>
+              <a href="/dashboard?month=<%= month + 1 %>">Next Month ➡</a>
+              <% } %>
+    </div>
+
+    <div class="month-name">
+      <%= new Date(0, month).toLocaleString('default', { month: 'long' }) %> Attendance
+    </div>
+  </div>
+
+  <form method="POST" action="/attendance">
+    <table>
+      <tr>
+        <% calendar.forEach(day=> { %>
+          <td class="<%= day.isMarked ? 'present' : day.isToday ? 'today' : day.isPast ? 'disabled' : 'disabled' %>">
+            <%= day.date.split('-')[2] %><br />
+              <% if (day.isToday) { %>
+                <% if (day.isMarked) { %>
+                  <button type="submit" name="action" value="unmark"
+                    onclick="return confirm('Do you really want to unmark your attendance for today?')">✅ Present (Click
+                    to Unmark)</button>
+                  <% } else { %>
+                    <button type="submit" name="action" value="mark"
+                      onclick="return confirm('Do you want to mark yourself present today?')">Mark Present</button>
+                    <% } %>
+                      <% } else if (day.isMarked) { %>
+                        ✅ Present
+                        <% } %>
+
+          </td>
+          <% if (parseInt(day.date.split('-')[2]) % 7===0) { %>
+      </tr>
+      <tr>
+        <% } %>
+          <% }); %>
+      </tr>
+    </table>
+  </form>
+  <script>
+    function calculateIncome(event) {
+    event.preventDefault();
+    const perDay = parseFloat(document.getElementById('income').value);
+    const presentDays = parseInt(document.getElementById('presentCountDisplay').innerText);; 
+    const total = perDay * presentDays;
+    document.getElementById('totalIncome').innerText = `💰 Total Income for <%= new Date(0, month).toLocaleString('default', { month: 'long' }) %>: ₹${total}`;
+  }
+  </script>
+</body>
+
+</html>
