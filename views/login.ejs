@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
   <style>
     * {
@@ -13,11 +14,12 @@
     }
 
     body {
-      height: 100vh;
+      min-height: 100vh;
       background: linear-gradient(135deg, #74ebd5, #ACB6E5);
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 20px;
     }
 
     .login-container {
@@ -33,6 +35,7 @@
     .login-container h2 {
       margin-bottom: 24px;
       color: #333;
+      font-size: 24px;
     }
 
     input[type="text"] {
@@ -75,6 +78,23 @@
     a {
       text-decoration: none;
     }
+
+    /* Mobile responsiveness */
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 30px 20px;
+      }
+
+      .login-container h2 {
+        font-size: 20px;
+      }
+
+      input[type="text"],
+      button {
+        font-size: 15px;
+        padding: 10px 14px;
+      }
+    }
   </style>
 </head>
 
@@ -85,8 +105,9 @@
       <input type="text" name="idNumber" placeholder="Enter your ID" required />
       <button type="submit">Login</button>
     </form>
-    <a href="/sign-up"><button type="button">Sign Up</button></a>
+    <a href="/sign-up"><button type="button" class="signup-btn">Sign Up</button></a>
   </div>
 </body>
 
 </html>
+
