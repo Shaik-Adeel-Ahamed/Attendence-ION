@@ -152,11 +152,11 @@
   <div class="header">
     <h2>Welcome, <%= user.name %> (ID: <%= user.idNumber %>)</h2>
     <h3>You were present <%= presentCount.length %> days this month</h3>
-    <p id="presentCountDisplay"><%= presentCount.length %></p>
+    <p id="presentCountDisplay" hidden><%= presentCount.length %></p>
 
     <form id="incomeForm" onsubmit="calculateIncome(event)">
       <label for="income">Enter Per Day Income:</label>
-      <input type="number" id="income" required />
+      <input type="number" id="income" placeholder="Per day income" required />
       <button type="submit" style="height: 40px; max-width: 75px;">Calculate</button>
     </form>
 
