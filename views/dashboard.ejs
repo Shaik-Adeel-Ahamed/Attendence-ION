@@ -2,205 +2,227 @@
 <html>
 
 <head>
-  <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Attendance Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    padding: 10px;
-  }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+    }
 
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-top: 20px;
-  }
+    .header {
+      margin-bottom: 20px;
+    }
 
-  td {
-    border: 1px solid black;
-    padding: 10px;
-    text-align: center;
-    min-width: 40px;
-    word-wrap: break-word;
-  }
+    .calendar-container {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-top: 20px;
+    }
 
-  .present {
-    background-color: lightgreen;
-  }
-
-  .disabled {
-    background-color: #eee;
-    color: #aaa;
-  }
-
-  .today {
-    background-color: #ffc;
-  }
-
-  .header {
-    margin-bottom: 20px;
-  }
-
-  button {
-    margin-top: 10px;
-    padding: 6px 12px;
-    font-size: 14px;
-    border: none;
-    border-radius: 5px;
-    background-color: #28a745;
-    color: white;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #218838;
-  }
-
-  .nav-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .nav-buttons a,
-  .nav-buttons span {
-    text-decoration: none;
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: background-color 0.3s;
-  }
-
-  .nav-buttons a:hover {
-    background-color: #0056b3;
-  }
-
-  #incomeForm {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  #income {
-    padding: 6px;
-    font-size: 16px;
-    flex: 1;
-    min-width: 120px;
-    max-width: 200px;
-  }
-
-  #totalIncome {
-    margin-top: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-  }
-
-  @media (max-width: 600px) {
-    td {
+    .day-name, .day-box {
+      border: 1px solid #ccc;
+      text-align: center;
       padding: 6px;
-      font-size: 12px;
+      min-height: 80px;
+      font-size: 14px;
+      border-radius: 6px;
+    }
+
+    .day-name {
+      display: flex;
+      justify-content: center; 
+      align-items: center;     
+      height: 50px; 
+      background-color: #d6eaf8;
+      font-weight: bold;
+      border: 1px solid #ccc;
+    }
+
+    .present {
+      background-color: lightgreen;
+    }
+
+    .disabled {
+      background-color: #d1c4e9; 
+      color: black;            
+      opacity: 0.6;              
+      cursor: not-allowed;       
+      pointer-events: none;      
+    }
+
+    .today {
+      background-color: khaki;
     }
 
     button {
-      font-size: 12px;
+      margin-top: 4px;
       padding: 4px 8px;
+      font-size: 13px;
+      border: none;
+      border-radius: 5px;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
     }
 
     .nav-buttons {
-      flex-direction: column;
-      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
     }
 
     .nav-buttons a,
     .nav-buttons span {
-      width: 100%;
-      text-align: center;
+      text-decoration: none;
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .nav-buttons a:hover {
+      background-color: #0056b3;
     }
 
     #incomeForm {
-      flex-direction: column;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    #income {
+      padding: 6px;
+      font-size: 16px;
+      flex: 1;
+      min-width: 120px;
+      max-width: 200px;
     }
 
     #totalIncome {
-      text-align: center;
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
     }
-  }
-</style>
 
+    @media (max-width: 600px) {
+      .day-name, .day-box {
+        font-size: 12px;
+        padding: 6px 4px;
+        min-height: 50px;
+      }
+
+      button {
+        font-size: 15px;
+        padding: 3px 6px;
+      }
+
+      #incomeForm {
+        flex-direction: column;
+      }
+
+      .nav-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .nav-buttons a,
+      .nav-buttons span {
+        width: 50%;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 
 <body>
   <div class="header">
     <h2>Welcome, <%= user.name %> (ID: <%= user.idNumber %>)</h2>
     <h3>You were present <%= presentCount.length %> days this month</h3>
-    <p id="presentCountDisplay" class="days" ><%= presentCount.length %></p>
-    <form id="incomeForm" onsubmit="calculateIncome(event)">
-  <label for="income">Enter Per Day Income:</label>
-  <input type="number" id="income" required />
-  <button type="submit">Calculate</button>
-</form>
+    <p id="presentCountDisplay"><%= presentCount.length %></p>
 
-<h3 id="totalIncome"></h3>
+    <form id="incomeForm" onsubmit="calculateIncome(event)">
+      <label for="income">Enter Per Day Income:</label>
+      <input type="number" id="income" required />
+      <button type="submit" style="height: 40px; max-width: 75px;">Calculate</button>
+    </form>
+
+    <h3 id="totalIncome"></h3>
 
     <div class="nav-buttons">
-      <% if (month> 0) { %>
+      <% if (month > 0) { %>
         <a href="/dashboard?month=<%= month - 1 %>">⬅ Previous Month</a>
-        <% } else { %>
-          <span></span>
-          <% } %>
+      <% } else { %>
+        <span></span>
+      <% } %>
 
-            <% if (month < 11) { %>
-              <a href="/dashboard?month=<%= month + 1 %>">Next Month ➡</a>
-              <% } %>
+      <% if (month < 11) { %>
+        <a href="/dashboard?month=<%= month + 1 %>">Next Month ➡</a>
+      <% } %>
     </div>
 
-    <div class="month-name">
-      <%= new Date(0, month).toLocaleString('default', { month: 'long' }) %> Attendance
-    </div>
+    <h3><%= new Date(0, month).toLocaleString('default', { month: 'long' }) %> Attendance</h3>
   </div>
 
+  <!-- Calendar -->
   <form method="POST" action="/attendance">
-    <table>
-      <tr>
-        <% calendar.forEach(day=> { %>
-          <td class="<%= day.isMarked ? 'present' : day.isToday ? 'today' : day.isPast ? 'disabled' : 'disabled' %>">
-            <%= day.date.split('-')[2] %><br />
-              <% if (day.isToday) { %>
-                <% if (day.isMarked) { %>
-                  <button type="submit" name="action" value="unmark"
-                    onclick="return confirm('Do you really want to unmark your attendance for today?')">✅ Present (Click
-                    to Unmark)</button>
-                  <% } else { %>
-                    <button type="submit" name="action" value="mark"
-                      onclick="return confirm('Do you want to mark yourself present today?')">Mark Present</button>
-                    <% } %>
-                      <% } else if (day.isMarked) { %>
-                        ✅ Present
-                        <% } %>
+    <div class="calendar-container">
+      <% const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; %>
+      <% dayNames.forEach(name => { %>
+        <div class="day-name" ><%= name %></div>
+      <% }); %>
 
-          </td>
-          <% if (parseInt(day.date.split('-')[2]) % 7===0) { %>
-      </tr>
-      <tr>
-        <% } %>
-          <% }); %>
-      </tr>
-    </table>
+      <% 
+        const year = new Date().getFullYear();
+        const firstDay = new Date(year, month, 1).getDay(); 
+        for (let i = 0; i < firstDay; i++) { 
+      %>
+        <div class="day-box disabled"></div>
+      <% } %>
+
+      <% calendar.forEach(day => { %>
+        <div class="day-box <%= day.isMarked ? 'present' : day.isToday ? 'today' : day.isPast ? 'disabled' : 'disabled' %>">
+          <%= day.date.split('-')[2] %><br />
+          <% if (day.isToday) { %>
+            <% if (day.isMarked) { %>
+              <button type="submit" name="action" value="unmark"
+                onclick="return confirm('Unmark attendance for today?')">✅ Unmark</button>
+            <% } else { %>
+              <button type="submit" name="action" value="mark"
+                onclick="return confirm('Mark yourself present today?')">Mark</button>
+            <% } %>
+          <% } else if (day.isMarked) { %>
+            ✅
+          <% } %>
+        </div>
+      <% }); %>
+    </div>
   </form>
+
   <script>
     function calculateIncome(event) {
-    event.preventDefault();
-    const perDay = parseFloat(document.getElementById('income').value);
-    const presentDays = parseInt(document.getElementById('presentCountDisplay').innerText);; 
-    const total = perDay * presentDays;
-    document.getElementById('totalIncome').innerText = `💰 Total Income for <%= new Date(0, month).toLocaleString('default', { month: 'long' }) %>: ₹${total}`;
-  }
+      event.preventDefault();
+      const perDay = parseFloat(document.getElementById('income').value);
+      const presentDays = parseInt(document.getElementById('presentCountDisplay').innerText);
+      const total = perDay * presentDays;
+      document.getElementById('totalIncome').innerText =
+        `💰 Total Income for <%= new Date(0, month).toLocaleString('default', { month: 'long' }) %>: ₹${total}`;
+    }
   </script>
 </body>
 
 </html>
+
