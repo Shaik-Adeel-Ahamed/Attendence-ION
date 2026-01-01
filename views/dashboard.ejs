@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html>
+<!-- 
 
+ <!DOCTYPE html>
+<html>
 <head>
   <meta charset="UTF-8">
   <title>Attendance Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,9 +14,7 @@
       background: linear-gradient(135deg, #74ebd5, #ACB6E5);
     }
 
-    .header {
-      margin-bottom: 20px;
-    }
+    .header { margin-bottom: 20px; }
 
     .calendar-container {
       display: grid;
@@ -34,195 +34,501 @@
 
     .day-name {
       display: flex;
-      justify-content: center; 
-      align-items: center;     
-      height: 50px; 
+      justify-content: center;
+      align-items: center;
+      height: 50px;
       background-color: #d6eaf8;
       font-weight: bold;
-      border: 1px solid #ccc;
     }
 
-    .present {
-      background-color: lightgreen;
-    }
+    .present { background-color: lightgreen; }
+    .today { background-color: khaki; }
 
     .disabled {
-      background-color: #d1c4e9; 
-      color: black;            
-      opacity: 0.6;              
-      cursor: not-allowed;       
-      pointer-events: none;      
-    }
-
-    .today {
-      background-color: khaki;
+      background-color: #d1c4e9;
+      opacity: 0.6;
+      pointer-events: none;
     }
 
     button {
       margin-top: 4px;
       padding: 4px 8px;
-      font-size: 13px;
-      border: none;
       border-radius: 5px;
+      border: none;
       background-color: #28a745;
       color: white;
       cursor: pointer;
     }
 
-    button:hover {
-      background-color: #218838;
-    }
-
-    .nav-buttons {
+    .nav-buttons, .year-buttons {
       display: flex;
       justify-content: space-between;
-      flex-wrap: wrap;
       gap: 10px;
-      margin: 20px 0;
+      margin: 15px 0;
+      flex-wrap: wrap;
     }
 
-    .nav-buttons a,
-    .nav-buttons span {
+    .nav-buttons a, .year-buttons a {
       text-decoration: none;
-      padding: 10px 15px;
+      padding: 8px 14px;
       background-color: #007bff;
       color: white;
       border-radius: 6px;
       font-weight: bold;
-      transition: background-color 0.3s;
     }
 
-    .nav-buttons a:hover {
-      background-color: #0056b3;
-    }
+    /* ---------- MOBILE RESPONSIVE ---------- */
+@media (max-width: 768px) {
 
-    #incomeForm {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
+  body {
+    padding: 6px;
+  }
 
-    #income {
-      padding: 6px;
-      font-size: 16px;
-      flex: 1;
-      min-width: 120px;
-      max-width: 200px;
-    }
+  h2 {
+    font-size: 18px;
+  }
 
-    #totalIncome {
-      margin-top: 10px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-    }
+  h3 {
+    font-size: 15px;
+  }
 
-    @media (max-width: 600px) {
-      .day-name, .day-box {
-        font-size: 12px;
-        padding: 6px 4px;
-        min-height: 50px;
-      }
+  .calendar-container {
+    gap: 4px;
+  }
 
-      button {
-        font-size: 15px;
-        padding: 3px 6px;
-      }
+  .day-name {
+    font-size: 12px;
+    height: 35px;
+    padding: 4px;
+  }
 
-      #incomeForm {
-        flex-direction: column;
-      }
+  /* .day-box {
+    min-height: 65px;
+    font-size: 12px;
+    padding: 4px;
+  } */
 
-      .nav-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
+  .day-box {
+  border: 1px solid #ccc;
+  text-align: center;
+  padding: 6px;
+  min-height: 80px;
+  font-size: 14px;
+  border-radius: 6px;
+  touch-action: manipulation;
+}
 
-      .nav-buttons a,
-      .nav-buttons span {
-        width: 50%;
-        text-align: center;
-      }
-    }
+
+  .day-box button {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  /* Navigation stacks vertically */
+  .nav-buttons,
+  .year-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-buttons a,
+  .year-buttons a {
+    text-align: center;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  /* Income form mobile friendly */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  input[type="number"] {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
   </style>
 </head>
 
 <body>
+
   <div class="header">
     <h2>Welcome, <%= user.name %> (ID: <%= user.idNumber %>)</h2>
-    <h3>You were present <%= presentCount.length %> days this month</h3>
+
+    <h3>
+      You were present <%= presentCount.length %> days in
+      <%= new Date(year, month).toLocaleString('default', { month: 'long' }) %>
+      <%= year %>
+    </h3>
+
     <p id="presentCountDisplay" hidden><%= presentCount.length %></p>
 
-    <form id="incomeForm" onsubmit="calculateIncome(event)">
-      <label for="income">Enter Per Day Income:</label>
-      <input type="number" id="income" placeholder="Per day income" required />
-      <button type="submit" style="height: 40px; max-width: 75px;">Calculate</button>
+    <form onsubmit="calculateIncome(event)">
+      <label>Enter Per Day Income:</label>
+      <input type="number" id="income" required />
+      <button type="submit">Calculate</button>
     </form>
 
     <h3 id="totalIncome"></h3>
 
     <div class="nav-buttons">
       <% if (month > 0) { %>
-        <a href="/dashboard?month=<%= month - 1 %>">⬅ Previous Month</a>
+        <a href="/dashboard?month=<%= month - 1 %>&year=<%= year %>">⬅ Previous Month</a>
       <% } else { %>
-        <span></span>
+        <a href="/dashboard?month=11&year=<%= year - 1 %>">⬅ Dec <%= year - 1 %></a>
       <% } %>
 
       <% if (month < 11) { %>
-        <a href="/dashboard?month=<%= month + 1 %>">Next Month ➡</a>
+        <a href="/dashboard?month=<%= month + 1 %>&year=<%= year %>">Next Month ➡</a>
+      <% } else { %>
+        <a href="/dashboard?month=0&year=<%= year + 1 %>">Jan <%= year + 1 %> ➡</a>
       <% } %>
     </div>
 
-    <h3><%= new Date(0, month).toLocaleString('default', { month: 'long' }) %> Attendance</h3>
+    <h3>
+      <%= new Date(year, month).toLocaleString('default', { month: 'long' }) %>
+      <%= year %> Attendance
+    </h3>
   </div>
 
-  <!-- Calendar -->
+
+  <form method="POST" action="/attendance">
+  <div class="calendar-container calendar-mobile">
+
+    <% ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => { %>
+      <div class="day-name"><%= d %></div>
+    <% }) %>
+
+    <% for (let i = 0; i < firstDay1; i++) { %>
+      <div class="day-box disabled"></div>
+    <% } %>
+
+    
+    <% calendar.forEach(day => { %>
+      <div class="day-box
+        <%= day.isMarked
+            ? 'present'
+            : day.isToday
+            ? 'today'
+            : day.isPast
+            ? 'disabled'
+            : '' %>">
+
+        <%= day.date.split('-')[2] %><br/>
+
+        <% if (day.isToday) { %>
+          <button
+            type="submit"
+            name="action"
+            value="<%= day.isMarked ? 'unmark' : 'mark' %>">
+            <%= day.isMarked ? 'Unmark' : 'Mark' %>
+          </button>
+        <% } else if (day.isMarked) { %>
+          ✅
+        <% } %>
+
+      </div>
+    <% }) %>
+
+  </div>
+</form>
+
+<script>
+  function calculateIncome(e) {
+    e.preventDefault();
+    const perDay = Number(document.getElementById('income').value);
+    const days = Number(document.getElementById('presentCountDisplay').innerText);
+
+    document.getElementById('totalIncome').innerText =
+      `💰 Total Income for <%= new Date(year, month).toLocaleString('default', { month: 'long' }) %> <%= year %>: ₹${perDay * days}`;
+  }
+</script>
+
+
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ---------- FIXED THEME TOGGLE ---------- */
+    #themeToggle {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 999;
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: none;
+      background-color: #333;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .header { margin-bottom: 20px; }
+
+    .calendar-container {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-top: 20px;
+    }
+
+    .day-name, .day-box {
+      border: 1px solid #ccc;
+      text-align: center;
+      padding: 6px;
+      min-height: 80px;
+      font-size: 14px;
+      border-radius: 6px;
+    }
+
+    .day-name {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 50px;
+      background-color: #d6eaf8;
+      font-weight: bold;
+    }
+
+    .present { background-color: #a5d6a7; }
+    .today { background-color: #fff3a0; }
+
+    .disabled {
+      background-color: #e0e0e0;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    button {
+      margin-top: 4px;
+      padding: 4px 8px;
+      border-radius: 5px;
+      border: none;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+
+    .nav-buttons a {
+      text-decoration: none;
+      padding: 8px 14px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    /* ---------- SOFT DARK THEME ---------- */
+    body.dark {
+      background: linear-gradient(135deg, #1f2933, #111827);
+      color: #e5e7eb;
+    }
+
+    body.dark .day-name {
+      background-color: #2d3748;
+      border-color: #4b5563;
+    }
+
+    body.dark .day-box {
+      background-color: #1e293b;
+      border-color: #4b5563;
+      color: #e5e7eb;
+    }
+
+    body.dark .present {
+      background-color: #2f855a;
+      color: #eafff5;
+    }
+
+    body.dark .today {
+      background-color: #7c6f64;
+      color: #fff;
+    }
+
+    body.dark .disabled {
+      background-color: #374151;
+      opacity: 0.6;
+    }
+
+    body.dark button {
+      background-color: #6366f1;
+    }
+
+    body.dark .nav-buttons a {
+      background-color: #4f46e5;
+    }
+
+    body.dark #themeToggle {
+      background-color: #e5e7eb;
+      color: #111827;
+    }
+
+    /* ---------- MOBILE ---------- */
+    @media (max-width: 768px) {
+      h2 { font-size: 18px; }
+      h3 { font-size: 15px; }
+      .day-name { font-size: 12px; height: 35px; }
+      .nav-buttons { flex-direction: column; }
+      .nav-buttons a { text-align: center; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- THEME BUTTON -->
+  <button id="themeToggle">🌙 Dark Mode</button>
+
+  <div class="header">
+    <h2>Welcome, <%= user.name %> (ID: <%= user.idNumber %>)</h2>
+
+    <h3>
+      You were present <%= presentCount.length %> days in
+      <%= new Date(year, month).toLocaleString('default', { month: 'long' }) %>
+      <%= year %>
+    </h3>
+
+    <p id="presentCountDisplay" hidden><%= presentCount.length %></p>
+
+    <form onsubmit="calculateIncome(event)">
+      <label>Enter Per Day Income:</label>
+      <input type="number" id="income" required />
+      <button type="submit">Calculate</button>
+    </form>
+
+    <h3 id="totalIncome"></h3>
+
+    <div class="nav-buttons">
+      <% if (month > 0) { %>
+        <a href="/dashboard?month=<%= month - 1 %>&year=<%= year %>">⬅ Previous Month</a>
+      <% } else { %>
+        <a href="/dashboard?month=11&year=<%= year - 1 %>">⬅ Dec <%= year - 1 %></a>
+      <% } %>
+
+      <% if (month < 11) { %>
+        <a href="/dashboard?month=<%= month + 1 %>&year=<%= year %>">Next Month ➡</a>
+      <% } else { %>
+        <a href="/dashboard?month=0&year=<%= year + 1 %>">Jan <%= year + 1 %> ➡</a>
+      <% } %>
+    </div>
+  </div>
+
   <form method="POST" action="/attendance">
     <div class="calendar-container">
-      <% const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; %>
-      <% dayNames.forEach(name => { %>
-        <div class="day-name" ><%= name %></div>
-      <% }); %>
 
-      <% 
-        const year = new Date().getFullYear();
-        const firstDay = new Date(year, month, 1).getDay(); 
-        for (let i = 0; i < firstDay; i++) { 
-      %>
+      <% ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => { %>
+        <div class="day-name"><%= d %></div>
+      <% }) %>
+
+      <% for (let i = 0; i < firstDay1; i++) { %>
         <div class="day-box disabled"></div>
       <% } %>
 
       <% calendar.forEach(day => { %>
-        <div class="day-box <%= day.isMarked ? 'present' : day.isToday ? 'today' : day.isPast ? 'disabled' : 'disabled' %>">
-          <%= day.date.split('-')[2] %><br />
+        <div class="day-box
+          <%= day.isMarked ? 'present' : day.isToday ? 'today' : day.isPast ? 'disabled' : '' %>">
+
+          <%= day.date.split('-')[2] %><br/>
+
           <% if (day.isToday) { %>
-            <% if (day.isMarked) { %>
-              <button type="submit" name="action" value="unmark"
-                onclick="return confirm('Unmark attendance for today?')">✅ Unmark</button>
-            <% } else { %>
-              <button type="submit" name="action" value="mark"
-                onclick="return confirm('Mark yourself present today?')">Mark</button>
-            <% } %>
+            <button type="submit" name="action" value="<%= day.isMarked ? 'unmark' : 'mark' %>">
+              <%= day.isMarked ? 'Unmark' : 'Mark' %>
+            </button>
           <% } else if (day.isMarked) { %>
             ✅
           <% } %>
+
         </div>
-      <% }); %>
+      <% }) %>
+
     </div>
   </form>
 
-  <script>
-    function calculateIncome(event) {
-      event.preventDefault();
-      const perDay = parseFloat(document.getElementById('income').value);
-      const presentDays = parseInt(document.getElementById('presentCountDisplay').innerText);
-      const total = perDay * presentDays;
+  <!-- <script>
+    function calculateIncome(e) {
+      e.preventDefault();
+      const perDay = Number(document.getElementById('income').value);
+      const days = Number(document.getElementById('presentCountDisplay').innerText);
       document.getElementById('totalIncome').innerText =
-        `💰 Total Income for <%= new Date(0, month).toLocaleString('default', { month: 'long' }) %>: ₹${total}`;
+        `💰 Total Income: ₹${perDay * days}`;
     }
-  </script>
-</body>
 
+    // Dark Mode Toggle (NO storage)
+    const toggleBtn = document.getElementById('themeToggle');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      toggleBtn.innerText =
+        document.body.classList.contains('dark')
+          ? '☀ Light Mode'
+          : '🌙 Dark Mode';
+    });
+  </script> -->
+  <script>
+  function calculateIncome(e) {
+    e.preventDefault();
+    const perDay = Number(document.getElementById('income').value);
+    const days = Number(document.getElementById('presentCountDisplay').innerText);
+    document.getElementById('totalIncome').innerText =
+      `💰 Total Income: ₹${perDay * days}`;
+  }
+
+  const toggleBtn = document.getElementById('themeToggle');
+
+  // 🔁 Restore theme on page load
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark');
+    toggleBtn.innerText = '☀ Light Mode';
+  }
+
+  // 🌙 Toggle theme + save preference
+  toggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+
+    if (document.body.classList.contains('dark')) {
+      localStorage.setItem('theme', 'dark');
+      toggleBtn.innerText = '☀ Light Mode';
+    } else {
+      localStorage.setItem('theme', 'light');
+      toggleBtn.innerText = '🌙 Dark Mode';
+    }
+  });
+</script>
+
+
+</body>
 </html>
 
