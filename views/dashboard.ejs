@@ -5,7 +5,7 @@
   <title>Attendance Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
+  <!-- <style>
     body {
       font-family: Arial, sans-serif;
       padding: 10px;
@@ -145,7 +145,263 @@
       .nav-buttons { flex-direction: column; }
       .nav-buttons a { text-align: center; }
     }
-  </style>
+  </style> -->
+
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 15px;
+    background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ---------- FIXED THEME TOGGLE ---------- */
+  #themeToggle {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 999;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .header {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+  .calendar-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .day-name, .day-box {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 8px 4px;
+    min-height: 85px;
+    font-size: 14px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .day-name {
+    justify-content: center;
+    align-items: center;
+    height: 45px;
+    background-color: #d6eaf8;
+    font-weight: bold;
+  }
+
+  .present { background-color: #a5d6a7; }
+  .today { background-color: #fff3a0; }
+
+  .disabled {
+    background-color: #e0e0e0;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+ button {
+  margin-top: 6px;
+  padding: 6px;
+  border-radius: 6px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+
+  /* NEW */
+  transition: all 0.25s ease;
+}
+button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+button:active {
+  transform: scale(0.95);
+}
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+  }
+
+  .nav-buttons a {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  padding: 8px 10px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  font-weight: bold;
+
+  transition: all 0.25s ease;
+}
+
+.nav-buttons a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+  input {
+    padding: 6px;
+    width: 120px;
+    max-width: 100%;
+    margin: 5px 0;
+  }
+
+  .day-box {
+  border: 1px solid #ccc;
+  text-align: center;
+  padding: 8px 4px;
+  min-height: 85px;
+  font-size: 14px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  /* NEW */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: all 0.25s ease;
+}
+
+  /* ---------- SOFT DARK THEME ---------- */
+  body.dark {
+    background: linear-gradient(135deg, #1f2933, #111827);
+    color: #e5e7eb;
+  }
+
+  body.dark .header {
+  background: rgba(31, 41, 55, 0.75);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+  body.dark .day-name {
+    background-color: #2d3748;
+    border-color: #4b5563;
+  }
+
+  body.dark .day-box {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+  body.dark .present {
+    background-color: #2f855a;
+    color: #eafff5;
+  }
+
+  body.dark .today {
+    background-color: #7c6f64;
+    color: #fff;
+  }
+
+  body.dark .disabled {
+    background-color: #374151;
+    opacity: 0.6;
+  }
+
+  body.dark button {
+    background-color: #6366f1;
+  }
+
+  body.dark .nav-buttons a {
+    background-color: #4f46e5;
+  }
+
+  body.dark #themeToggle {
+    background-color: #e5e7eb;
+    color: #111827;
+  }
+
+  /* ---------- TABLET ---------- */
+  @media (max-width: 1024px) {
+    .day-box {
+      min-height: 75px;
+      font-size: 13px;
+    }
+  }
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width: 768px) {
+    body {
+      padding: 10px;
+    }
+
+    h2 { font-size: 18px; }
+    h3 { font-size: 15px; }
+
+    .calendar-container {
+      gap: 5px;
+    }
+
+    .day-name {
+      font-size: 12px;
+      height: 35px;
+    }
+
+    .day-box {
+      min-height: 65px;
+      font-size: 12px;
+      padding: 6px 2px;
+    }
+
+    button {
+      font-size: 11px;
+      padding: 5px;
+    }
+
+    .nav-buttons {
+      flex-direction: column;
+    }
+
+    .nav-buttons a {
+      width: 100%;
+    }
+  }
+
+  /* ---------- SMALL PHONES ---------- */
+  @media (max-width: 480px) {
+    .day-box {
+      min-height: 55px;
+      font-size: 11px;
+    }
+
+    button {
+      font-size: 10px;
+      padding: 4px;
+    }
+  }
+</style>
 </head>
 
 <body>
