@@ -250,24 +250,50 @@ app.get('/dashboard', async (req, res) => {
 
 
 /* -------------------- ATTENDANCE -------------------- */
+// app.post('/attendance', async (req, res) => {
+//   if (!req.session.userId) return res.redirect('/');
+
+//   const user = await User.findById(req.session.userId);
+//   const today = moment().format('YYYY-MM-DD');
+//   const action = req.body.action;
+
+//   if (action === 'mark' && !user.attendance.includes(today)) {
+//     user.attendance.push(today);
+//     await user.save();
+//   }
+
+//   if (action === 'unmark' && user.attendance.includes(today)) {
+//     user.attendance = user.attendance.filter(d => d !== today);
+//     await user.save();
+//   }
+
+//   res.redirect('/dashboard');
+// });
 app.post('/attendance', async (req, res) => {
   if (!req.session.userId) return res.redirect('/');
 
   const user = await User.findById(req.session.userId);
-  const today = moment().format('YYYY-MM-DD');
-  const action = req.body.action;
+  const selectedDate = req.body.date; // date sent from button
 
-  if (action === 'mark' && !user.attendance.includes(today)) {
-    user.attendance.push(today);
-    await user.save();
+  if (!selectedDate) return res.redirect('/dashboard');
+
+  // If already marked → unmark
+  if (user.attendance.includes(selectedDate)) {
+    user.attendance = user.attendance.filter(d => d !== selectedDate);
+  } 
+  // If not marked → mark
+  else {
+    user.attendance.push(selectedDate);
   }
 
-  if (action === 'unmark' && user.attendance.includes(today)) {
-    user.attendance = user.attendance.filter(d => d !== today);
-    await user.save();
-  }
+  await user.save();
 
-  res.redirect('/dashboard');
+  // Redirect back to same month/year
+  const dateObj = new Date(selectedDate);
+  const month = dateObj.getMonth();
+  const year = dateObj.getFullYear();
+
+  res.redirect(`/dashboard?month=${month}&year=${year}`);
 });
 
 /* -------------------- SERVER -------------------- */
