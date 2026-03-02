@@ -5,148 +5,6 @@
   <title>Attendance Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 10px;
-      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-      transition: background 0.3s, color 0.3s;
-    }
-
-    /* ---------- FIXED THEME TOGGLE ---------- */
-    #themeToggle {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      z-index: 999;
-      padding: 8px 14px;
-      border-radius: 20px;
-      border: none;
-      background-color: #333;
-      color: #fff;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-
-    .header { margin-bottom: 20px; }
-
-    .calendar-container {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-      margin-top: 20px;
-    }
-
-    .day-name, .day-box {
-      border: 1px solid #ccc;
-      text-align: center;
-      padding: 6px;
-      min-height: 80px;
-      font-size: 14px;
-      border-radius: 6px;
-    }
-
-    .day-name {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 50px;
-      background-color: #d6eaf8;
-      font-weight: bold;
-    }
-
-    .present { background-color: #a5d6a7; }
-    .today { background-color: #fff3a0; }
-
-    .disabled {
-      background-color: #e0e0e0;
-      opacity: 0.6;
-      pointer-events: none;
-    }
-
-    button {
-      margin-top: 4px;
-      padding: 4px 8px;
-      border-radius: 5px;
-      border: none;
-      background-color: #28a745;
-      color: white;
-      cursor: pointer;
-    }
-
-    .nav-buttons {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin: 15px 0;
-      flex-wrap: wrap;
-    }
-
-    .nav-buttons a {
-      text-decoration: none;
-      padding: 8px 14px;
-      background-color: #007bff;
-      color: white;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-
-    /* ---------- SOFT DARK THEME ---------- */
-    body.dark {
-      background: linear-gradient(135deg, #1f2933, #111827);
-      color: #e5e7eb;
-    }
-
-    body.dark .day-name {
-      background-color: #2d3748;
-      border-color: #4b5563;
-    }
-
-    body.dark .day-box {
-      background-color: #1e293b;
-      border-color: #4b5563;
-      color: #e5e7eb;
-    }
-
-    body.dark .present {
-      background-color: #2f855a;
-      color: #eafff5;
-    }
-
-    body.dark .today {
-      background-color: #7c6f64;
-      color: #fff;
-    }
-
-    body.dark .disabled {
-      background-color: #374151;
-      opacity: 0.6;
-    }
-
-    body.dark button {
-      background-color: #6366f1;
-    }
-
-    body.dark .nav-buttons a {
-      background-color: #4f46e5;
-    }
-
-    body.dark #themeToggle {
-      background-color: #e5e7eb;
-      color: #111827;
-    }
-
-    /* ---------- MOBILE ---------- */
-    @media (max-width: 768px) {
-      h2 { font-size: 18px; }
-      h3 { font-size: 15px; }
-      .day-name { font-size: 12px; height: 35px; }
-      .nav-buttons { flex-direction: column; }
-      .nav-buttons a { text-align: center; }
-    }
-  </style> -->
-
   <style>
   * {
     box-sizing: border-box;
@@ -442,8 +300,8 @@ button:active {
       <% } %>
     </div>
   </div>
-
-  <form method="POST" action="/attendance">
+<!-- 
+  <form method="POST" action="/attendance"> -->
     <div class="calendar-container">
 
       <% ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => { %>
@@ -454,14 +312,14 @@ button:active {
         <div class="day-box disabled"></div>
       <% } %>
 
-      <% calendar.forEach(day => { %>
+      <!-- <% calendar.forEach(day => { %>
   <div class="day-box
     <%= day.isMarked ? 'present' : day.isToday ? 'today' : '' %>">
 
-    <%= day.date.split('-')[2] %><br/>
+    <%= day.date.split('-')[2] %><br/> -->
 
     <!-- Allow marking ANY day -->
-    <button type="submit"
+    <!-- <button type="submit"
             name="date"
             value="<%= day.date %>">
       <%= day.isMarked ? 'Unmark' : 'Mark' %>
@@ -469,33 +327,42 @@ button:active {
 
     <% if (day.isMarked) { %>
       ✅
+    <% } %> -->
+    <!-- <% calendar.forEach(day => { %>
+  <div class="day-box
+      <%= day.isMarked ? 'present' : day.isToday ? 'today' : '' %>"
+      onclick="toggleAttendance('<%= day.date %>')">
+
+    <%= day.date.split('-')[2] %>
+
+    <% if (day.isMarked) { %>
+      <div>✅</div>
+    <% } %>
+
+  </div>
+<% }) %>
+
+  </div>
+<% }) %> -->
+<% calendar.forEach(day => { %>
+  <div class="day-box
+      <%= day.isMarked ? 'present' : day.isToday ? 'today' : '' %>"
+      onclick="toggleAttendance('<%= day.date %>')">
+
+    <%= day.date.split('-')[2] %>
+
+    <% if (day.isMarked) { %>
+      <div>✅</div>
     <% } %>
 
   </div>
 <% }) %>
 
     </div>
-  </form>
-
-  <!-- <script>
-    function calculateIncome(e) {
-      e.preventDefault();
-      const perDay = Number(document.getElementById('income').value);
-      const days = Number(document.getElementById('presentCountDisplay').innerText);
-      document.getElementById('totalIncome').innerText =
-        `💰 Total Income: ₹${perDay * days}`;
-    }
-
-    // Dark Mode Toggle (NO storage)
-    const toggleBtn = document.getElementById('themeToggle');
-    toggleBtn.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      toggleBtn.innerText =
-        document.body.classList.contains('dark')
-          ? '☀ Light Mode'
-          : '🌙 Dark Mode';
-    });
-  </script> -->
+    <form id="attendanceForm" method="POST" action="/attendance" style="display:none;">
+  <input type="hidden" name="date" id="selectedDate">
+</form>
+  <!-- </form> -->
   <script>
   function calculateIncome(e) {
     e.preventDefault();
@@ -525,6 +392,11 @@ button:active {
       toggleBtn.innerText = '🌙 Dark Mode';
     }
   });
+
+  function toggleAttendance(date) {
+  document.getElementById('selectedDate').value = date;
+  document.getElementById('attendanceForm').submit();
+}
 </script>
 
 
